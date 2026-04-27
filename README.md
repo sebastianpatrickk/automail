@@ -18,6 +18,18 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
+## Database
+
+Drizzle ORM is configured for PostgreSQL with `DATABASE_URL`.
+
+```bash
+cp .env.example .env
+npm run db:generate
+npm run db:migrate
+```
+
+Define tables in `db/schema.ts` and use the typed client from `db/index.ts`.
+
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
 ## Learn More
