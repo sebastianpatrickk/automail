@@ -30,6 +30,46 @@ npm run db:migrate
 
 Define tables in `db/schema.ts` and use the typed client from `db/index.ts`.
 
+## n8n Email Webhook
+
+The app exposes `POST /api/webhooks/n8n/email` for emails coming from n8n's
+Email Trigger (IMAP). Configure the Email Trigger with:
+
+- Download Attachments: enabled
+- Format: Resolved
+
+Then add an HTTP Request node:
+
+- Method: `POST`
+- URL: `https://your-app.example.com/api/webhooks/n8n/email`
+- Header: `Authorization: Bearer <N8N_EMAIL_WEBHOOK_SECRET>`
+- Body Content Type: JSON
+- Body expression:
+
+```js
+={{ { items: [{ json: $json, binary: $binary }] } }}
+```
+
+The webhook accepts one item or an `items` array. Email metadata and body are
+stored in `inbound_emails`; attachments from n8n binary data are decoded from
+base64 and stored in `inbound_email_attachments.data` as PostgreSQL `bytea`.
+
+## tRPC
+
+tRPC is available at `/api/trpc`. Define procedures in `trpc/routers/_app.ts`.
+
+Client components can use `useTRPC()` from `trpc/client.tsx` with TanStack Query:
+
+```tsx
+import { useQuery } from "@tanstack/react-query";
+import { useTRPC } from "@/trpc/client";
+
+const trpc = useTRPC();
+const hello = useQuery(trpc.hello.queryOptions({ text: "world" }));
+```
+
+Server components can import `trpc`, `getQueryClient`, and `HydrateClient` from `trpc/server.tsx` for prefetching and hydration.
+
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
 ## Learn More
