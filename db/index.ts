@@ -14,7 +14,13 @@ const globalForDb = globalThis as unknown as {
   postgresClient?: ReturnType<typeof postgres>;
 };
 
-const client = globalForDb.postgresClient ?? postgres(databaseUrl);
+const client =
+  globalForDb.postgresClient ??
+  postgres(databaseUrl, {
+    connection: {
+      search_path: "public",
+    },
+  });
 
 if (process.env.NODE_ENV !== "production") {
   globalForDb.postgresClient = client;
